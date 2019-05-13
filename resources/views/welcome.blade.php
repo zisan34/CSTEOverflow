@@ -25,8 +25,11 @@
                         <label>Let's Discuss:</label>
                         <textarea class="form-control" id="post_details" name="post_details" placeholder="What's being Overflowed?" overlay="auto"></textarea>
                     </div>
+                    <a class="btn btn-primary" href="">Post</a>
                 </form>
             @endauth
+
+            <hr>
 
             <div class="post-preview">
               <a href="post.html">

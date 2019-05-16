@@ -87,11 +87,15 @@
             <!-- Pager -->
             <div class="clearfix">
               <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+
+        <br><br>
             </div>
         </div>
 
+
         <!-- Sidebar Widgets Column -->
         {{-- col-lg-8 col-md-10 mx-auto --}}
+        <br>
         <div class="col-lg-4 col-md-12">
 
 
@@ -176,7 +180,21 @@ $(document).ready(function() {
     $('#post_details').summernote({
     placeholder: 'What\'s being Overflowed?',
     tabsize: 2,
-    height: 100
+    height: 100,
+    // toolbar: [
+  //   // [groupName, [list of button]]
+     //    ['style', ['bold', 'italic', 'underline', 'clear']],
+     //    ['font', ['strikethrough', 'superscript', 'subscript']],
+     //    ['fontsize', ['fontsize']],
+     //    ['color', ['color']],
+     //    ['para', ['ul', 'ol', 'paragraph']],
+     //    ['height', ['height']],
+     //    ['table'],
+     //    ['undo'],
+     //    ['redo'],
+     //    ['codeview']
+     //  ]
+
     });
 });
     

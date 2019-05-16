@@ -53,7 +53,7 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'varsity_id'=>['required','string','max:30','unique:users'],
-            'u_type'=>['required','string','max:30'],
+            'u_type'=>['required','string','max:30',"regex:(Student|Teacher|Office Stuff)"],
         ]);
     }
 
@@ -65,7 +65,6 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        if($data['u_type']=='Student'||$data['u_type']=='Teacher'||$data['u_type']=='Office Stuff')
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -74,6 +73,5 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        return redirect()->route('register');
     }
 }

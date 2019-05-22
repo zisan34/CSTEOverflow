@@ -41,4 +41,25 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Profile');
     }
+
+    public function quizzes()
+    {
+        return $this->hasMany('App\Quiz');
+    }
+    public function participated($id)
+    {
+        $quiz=Quiz::find($id);
+
+        foreach($this->QuizParticipation as $user_quiz_participation)
+        {
+            if($user_quiz_participation->Quiz==$quiz)
+                return true;
+        }
+        return false;
+    }
+
+    public function QuizParticipation()
+    {
+        return $this->hasMany('App\QuizParticipation');
+    }
 }

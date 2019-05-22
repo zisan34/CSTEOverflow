@@ -36,20 +36,19 @@
 					</div>
 					<div class="form-group">
 						<label>Total Marks:</label>
-						@php
-							$marks=0;
-						@endphp
-						@foreach($quiz->QuizQuestions as $question)
-						@php
-							$marks+=$question->marks;
-						@endphp
-						@endforeach
-						{{$marks}}
-
+						{{$quiz->total_marks}}
 					</div>
 					<div class="form-group">
 						<label>Time:</label>
 						{{$quiz->time}} Minutes
+					</div>
+					<div class="form-group">
+						<label>Multiple attempt:</label>
+						@if($quiz->multiple_attempt=="1")
+							<span class="text-success">Allowed</span>
+						@else
+							<span class="text-danger">Not Allowed</span>
+						@endif
 					</div>
 
 					@if($quiz->message)
@@ -57,7 +56,7 @@
 						<label>Message From Quiz Creator:</label>
 						{{$quiz->message}}
 					</div>
-					@endif						
+					@endif
 
 					<input type="submit" name="submit" class="btn btn-primary" value="Start Exam">
 

@@ -8,6 +8,8 @@ use Session;
 
 use Auth;
 
+use Crypt;
+
 use App\Quiz;
 
 use App\QuizQuestion;
@@ -63,10 +65,17 @@ class QuizesController extends Controller
             'topic'=>'required',
             'key'=>'required',
             'mcq'=>'numeric',
+            'true_false'=>'numeric',
+            'short_ques'=>'numeric',
             'fig'=>'numeric',
-            'time'=>'required|numeric']);
+            'time'=>'required|numeric',
+            'total_marks'=>'required|numeric',
+            'show_correct'=>'required|boolean',
+            'multiple_attempt'=>'required|boolean'
+        ]);
 
-        if($request->mcq<1&&$request->fig<1)
+
+        if($request->mcq+$request->fig+$request->short_ques+$request->true_false<1)
         {
             Session::flash('error','You must have atleast one question');
             return redirect()->back();
@@ -78,6 +87,12 @@ class QuizesController extends Controller
         if($request->fig<1)
             $request->fig==0;
 
+        if($request->true_false<1)
+            $request->true_false==0;
+
+        if($request->short_ques<1)
+            $request->short_ques==0;
+
         // dd($request);
         $quiz=Quiz::create([
             'user_id'=>Auth::id(),
@@ -85,16 +100,24 @@ class QuizesController extends Controller
             'topic'=>$request->topic,
             'key'=>$request->key,
             'mcq'=>$request->mcq,
+            'true_false'=>$request->true_false,
             'fig'=>$request->fig,
+            'short_ques'=>$request->short_ques,
             'time'=>$request->time,
-            'message'=>$request->message
+            'message'=>$request->message,
+            'total_marks'=>$request->total_marks,
+            'show_correct'=>$request->show_correct,
+            'multiple_attempt'=>$request->multiple_attempt
+
         ]);
 
         session(['mcqs' => $quiz->mcq]);
         session(['figs' => $quiz->fig]);
+        session(['true_false' => $quiz->true_false]);        
+        session(['short_ques'=>$quiz->short_ques]);
         session(['quiz_id'=>$quiz->id]);
 
-        return redirect()->route('onlineExam.create.setQuestionAnswer',['q_id'=>$quiz->id]);
+        return redirect()->route('onlineExam.create.setQuestionAnswer',['q_id'=>Crypt::encrypt($quiz->id)]);
 
 
     }
@@ -102,19 +125,28 @@ class QuizesController extends Controller
     public function setQuestionAnswer($q_id)
     {
         # code...
-        $quiz=Quiz::find($q_id);
+        $id=Crypt::decrypt($q_id);
+        $quiz=Quiz::find($id);
         return view('quiz.questionAnswer')->with('mcqs',$quiz->mcq)
                                         ->with('figs',$quiz->fig)
-                                        ->with('quiz_id',$q_id);
+                                        ->with('short_ques',$quiz->short_ques)
+                                        ->with('true_false',$quiz->true_false)
+                                        ->with('quiz_id',$quiz->id);
     }
 
-    public function questionanswer(Request $request)
+    public function storeQuestionAnswer(Request $request)
     {
-        if(session('quiz_id')!=$request->quiz_id)
+        $q_id=Crypt::decrypt($request->quiz_id);
+
+        $quiz=Quiz::find(session('quiz_id'));
+
+        if(session('quiz_id')!=$q_id||$quiz->user->id!=Auth::user()->id)
         {
             Session::flash('error','Invalid Request');
             return redirect()->back();
         }
+
+
 
         $this->validate($request,[
             'marks.*'=>'required|numeric',
@@ -122,8 +154,22 @@ class QuizesController extends Controller
             'answers.*.*'=>'required'
         ]);
 
+
+        $total_marks=0;
+        foreach ($request->marks as $marks) {
+            $total_marks+=$marks;
+        }
+
+        if($total_marks!=$quiz->total_marks)
+        {
+            Session::flash('error','Total Marks must be '.$quiz->total_marks);
+            $request->flash();
+            return redirect()->back();
+        }
+
         $count=0;
 
+        //storing mcq ques & ans
         for($i=0;$i<session('mcqs');$i++) {
 
             $qques=QuizQuestion::Create([
@@ -147,7 +193,36 @@ class QuizesController extends Controller
 
             
         }
-        for($i=session('mcqs');$i<session('figs')+session('mcqs');$i++)
+        //storing true false ques & ans
+
+        for($i=session('mcqs');$i<session('mcqs')+session('true_false');$i++) {
+
+            $qques=QuizQuestion::Create([
+                'quiz_id'=>session('quiz_id'),
+                'question'=>$request->questions[$i],
+                'question_type'=>'True False',
+                'marks'=>$request->marks[$i]
+            ]);
+            $count=0;
+
+            foreach ($request->answers[$i] as $answer) {
+                $qans=new QQsAnswer;
+
+                $qans->quiz_question_id=$qques->id;
+                $qans->answer=$answer;
+                if($count==0)
+                    $qans->correct="1";
+                $qans->save();
+                $count++;
+            }
+
+            
+        }
+
+        //storing fill in the gaps ques
+
+
+        for($i=session('mcqs')+session('true_false');$i<session('figs')+session('mcqs')+session('true_false');$i++)
         {
 
             $qques=QuizQuestion::Create([
@@ -161,10 +236,156 @@ class QuizesController extends Controller
             
         }
 
+        //storing short ques
+        for($i=session('figs')+session('mcqs')+session('true_false');$i<session('figs')+session('mcqs')+session('true_false')+session('short_ques');$i++)
+        {
+
+            $qques=QuizQuestion::Create([
+                'quiz_id'=>session('quiz_id'),
+                'question'=>$request->questions[$i],
+                'question_type'=>'Short Question',
+                'marks'=>$request->marks[$i]
+            ]);
 
 
-        return redirect()->route('onlineExam.view',['id'=>$request->quiz_id]);
+            
+        }
+
+
+
+        return redirect()->route('onlineExam.view',['id'=>$quiz->id]);
     }
+
+
+    public function editQuiz($id)
+    {
+        $q_id=decrypt($id);
+
+        $quiz=Quiz::find($q_id);
+
+        if($quiz->user->id==Auth::user()->id)
+        {
+            return view('quiz.editquiz')->with('quiz',$quiz);
+        }
+
+        Session::flash('error','Invalid request');
+        return redirect()->back();
+    }
+    public function updateQuiz(Request $request)
+    {
+        $this->validate($request,[
+            'quiz_id'=>'required',
+            'title'=>'required',
+            'topic'=>'required',
+            'time'=>'required|numeric',
+            'key'=>'required',
+            'total_marks'=>'required|numeric',
+            'show_correct'=>'required|boolean',
+            'multiple_attempt'=>'required|boolean'
+        ]);
+        $id=decrypt($request->quiz_id);
+
+        $quiz=Quiz::find($id);
+
+        $quiz->title=$request->title;
+        $quiz->topic=$request->topic;
+        $quiz->time=$request->time;
+        $quiz->key=$request->key;
+        $quiz->total_marks=$request->total_marks;
+        $quiz->show_correct=$request->show_correct;
+        $quiz->multiple_attempt=$request->multiple_attempt;
+        $quiz->message=$request->message;
+
+        $quiz->save();
+
+        return redirect()->route('onlineExam.edit.QA',['id'=>$quiz->id]);
+
+    }
+
+    public function editQA($q_id)
+    {
+        $quiz=Quiz::find($q_id);
+        $mcqs=$quiz->mcq;
+        $figs=$quiz->fig;
+        $short_ques=$quiz->short_ques;
+        $true_false=$quiz->true_false;
+
+
+
+        session(['quiz_id'=>$quiz->id]);
+
+        return view('quiz.editQA')->with('quiz',$quiz);
+    }
+    public function updateQA(Request $request)
+    {       
+        $quiz=Quiz::find(session('quiz_id'));
+
+        if(session('quiz_id')!=$request->quiz_id||$quiz->user->id!=Auth::user()->id)
+        {
+            Session::flash('error','Invalid Request');
+            return redirect()->back();
+        }
+
+
+        $this->validate($request,[
+            'marks.*'=>'required|numeric',
+            'questions.*'=>'required',
+            'answers.*.*'=>'required'
+        ]);
+
+
+        $total_marks=0;
+        foreach ($request->marks as $marks) {
+            $total_marks+=$marks;
+        }
+
+        if($total_marks!=$quiz->total_marks)
+        {
+            Session::flash('error','Total Marks must be '.$quiz->total_marks);
+            $request->flash();
+            return redirect()->back();
+        }
+
+        $ques_count=0;
+
+        foreach ($quiz->QuizQuestions as $question) {
+
+            $question->question=$request->questions[$ques_count];
+            $question->marks=$request->marks[$ques_count];
+            $question->save();
+            if($question->question_type=="MCQ")
+            {
+                $ans_count=0;
+                foreach ($question->QQsAnswers as $answer) {
+                    $answer->answer=$request->answers[$ques_count][$ans_count];
+                    $answer->save();
+                    $ans_count++;
+
+                }
+            }
+            if($question->question_type=="True False")
+            {
+                $ans_count=0;
+                foreach ($question->QQsAnswers as $answer) {
+                    $answer->answer=$request->answers[$ques_count][$ans_count];
+                    $answer->save();
+                    $ans_count++;
+
+                }
+            }
+            $ques_count++;
+
+        }
+
+        return redirect()->route('onlineExam.view',['id'=>$quiz->id]);
+
+
+
+
+    }
+
+
+
 
     /**
      * Display the specified resource.
@@ -179,16 +400,21 @@ class QuizesController extends Controller
         return view('quiz.view')->with('quiz',$quiz);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function disable($id)
     {
-        //
+        $quiz=Quiz::find($id);
+        $quiz->enabled=0;
+        $quiz->save();
+        return redirect()->back();
     }
+    public function enable($id)
+    {
+        $quiz=Quiz::find($id);
+        $quiz->enabled=1;
+        $quiz->save();
+        return redirect()->back();
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -214,10 +440,26 @@ class QuizesController extends Controller
             'secret_key'=>'required']);
         $quiz=Quiz::find($request->quiz_id);
 
+        if($quiz->key!=$request->secret_key)
+        {            
+            Session::flash('error','Quiz Id and Secret key doesn\'t match');
+            return redirect()->back();
+        }
+
+
         if($quiz->enabled==0)
         {
-            Session::flash('error','This quiz not available now');
+            Session::flash('error','This quiz is not available now');
             return redirect()->back();
+        }
+
+        if($quiz->multiple_attempt=="0")
+        {
+            if(Auth::user()->participated($quiz->id))
+            {                
+                Session::flash('error','Multiple attempt is not allowed for this quiz');
+                return redirect()->back();
+            }
         }
 
         if(count($quiz->QuizQuestions)>0)
@@ -225,27 +467,47 @@ class QuizesController extends Controller
             return view('quiz.info')
             ->with('quiz',$quiz);
         }
-        Session::flash('These credentials do not match our records.');
+        Session::flash('error','These credentials do not match our records.');
         return redirect()->back();
     }
 
-    public function start(Request $request)
+    public function quizStart(Request $request)
     {
         $this->validate($request,[
             'quiz_id'=>'required']);
         $quiz_id=decrypt($request->quiz_id);
         session(['quiz_id'=>$quiz_id]);
 
+        $quiz=Quiz::find($quiz_id);
+
+        if($quiz->multiple_attempt=="0")
+        {
+            if(Auth::user()->participated($quiz->id))
+            {                
+                Session::flash('error','Multiple attempt is not allowed for this quiz');
+                return redirect()->back();
+            }
+        }
+        $quiz=Quiz::find($quiz_id);
+        $questions=$quiz->QuizQuestions->shuffle();
+        session(['questions'=>$questions]);
+
+        session(['time'=>time()]);
+
+
         return view('quiz.startexam')
-                ->with('quiz',Quiz::find($quiz_id));
+                ->with('quiz',$quiz)
+                ->with('questions',$questions);
     }
 
-    public function submit(Request $request)
+    public function quizSubmit(Request $request)
     {
+        return session('time')." ".time();
         $this->validate($request,[
             'quiz_id'=>'required'
         ]);
         $quiz_id=decrypt($request->quiz_id);
+        $questions=session('questions');
 
         if(session('quiz_id')!=$quiz_id)
         {
@@ -257,6 +519,16 @@ class QuizesController extends Controller
 
         $quiz=Quiz::find($quiz_id);
 
+
+        if($quiz->multiple_attempt=="0")
+        {
+            if(Auth::user()->participated($quiz->id))
+            {                
+                Session::flash('error','Multiple attempt is not allowed for this quiz');
+                return redirect()->back();
+            }
+        }
+
         $quiz_participation=QuizParticipation::create([
             'quiz_id'=>$quiz_id,
             'user_id'=>Auth::id()
@@ -264,7 +536,8 @@ class QuizesController extends Controller
 
         $count=0;
         $marks=0;
-        foreach($quiz->QuizQuestions as $question)
+
+        foreach($questions as $question)
         {
             // echo  $question->correctAnswer();
             $result=new QuizResult;
@@ -280,7 +553,7 @@ class QuizesController extends Controller
                 $result->answer="";
             }
 
-            if($request->answer[$count]==$question->correctAnswer()&&$question->question_type!="Fill In The Gaps")
+            if($request->answer[$count]==$question->correctAnswer()&&$question->question_type!="Fill In The Gaps"&&$question->question_type!="Short Question")
             {
                 $result->marks=$question->marks;
             }
@@ -299,14 +572,87 @@ class QuizesController extends Controller
 
 
 
-        return view('quiz.resultsheet')
-                    ->with('quiz',$quiz)
-                    ->with('quiz_participation',$quiz_participation);
+        return redirect()->route('onlineExam.result',['$quiz_participation_id'=>Crypt::encrypt($quiz_participation->id)]);
 
 
 
 
     }
+
+    public function showResult($quiz_participation_id)
+    {
+        $qp_id=Crypt::decrypt($quiz_participation_id);
+
+        $quiz_participation=QuizParticipation::find($qp_id);
+
+        return view('quiz.resultsheet')
+                    ->with('quiz',$quiz_participation->Quiz)
+                    ->with('quiz_participation',$quiz_participation);
+
+
+    }
+
+
+    public function quizParticipations($id)
+    {
+        $quiz=Quiz::find($id);
+        return view('quiz.participations')->with('quiz',$quiz);
+    }
+    public function manualCheckParticipation($id)
+    {
+        $participation=QuizParticipation::find($id);
+        return view('quiz.updateParticipation')->with('participation',$participation);
+    }
+    public function updateFigResult($id)
+    {
+        $r_id=Crypt::decrypt($id);
+        $result=QuizResult::find($r_id);
+        $marks=$result->QuizQuestion->marks;
+        $result->marks=$marks;
+        $result->save();
+
+        $participation=$result->QuizParticipation;
+
+        $total_result=0;
+
+        foreach ($participation->QuizResult as $result) {
+            $total_result+=$result->marks;
+        }
+        $participation->marks=$total_result;
+        $participation->save();
+        return redirect()->back();
+    }
+    public function updateSqResult(Request $request)
+    {
+        $this->validate($request,[
+            'id'=>'required',
+            'marks'=>'required|numeric']);
+        $r_id=Crypt::decrypt($request->id);
+
+        $result=QuizResult::find($r_id);
+
+
+        if($request->marks<0||$request->marks>$result->QuizQuestion->marks)
+        {
+            Session::flash('error','Marks must be between 0 and '.$result->QuizQuestion->marks);
+            return redirect()->back();
+        }
+
+        $result->marks=$request->marks;
+        $result->save();
+
+        $participation=$result->QuizParticipation;
+
+        $total_result=0;
+
+        foreach ($participation->QuizResult as $result) {
+            $total_result+=$result->marks;
+        }
+        $participation->marks=$total_result;
+        $participation->save();
+        return redirect()->back();
+    }
+
 
 
 

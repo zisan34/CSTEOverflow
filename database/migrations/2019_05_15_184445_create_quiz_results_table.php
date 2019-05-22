@@ -18,7 +18,7 @@ class CreateQuizResultsTable extends Migration
             $table->unsignedInteger('quiz_participation_id');
             $table->unsignedInteger('quiz_question_id');
             $table->string('answer');
-            $table->integer('marks');
+            $table->integer('marks')->nullable();
             $table->timestamps();
         });
     }

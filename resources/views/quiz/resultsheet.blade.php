@@ -6,7 +6,7 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header">
-				<strong>Enter Question Details</strong>
+				<strong>Result of Quiz: {{$quiz->title}}</strong>
 			</div>
 			<div class="card-body">
 				@include('inc.errors')
@@ -15,7 +15,9 @@
 					<th>Question</th>
 					<th>Your answer</th>
 					<th>Your Mark</th>
+					@if($quiz->show_correct=="1")
 					<th>Correct answer</th>
+					@endif
 					</thead>
 					<tbody>
 						@foreach($quiz->QuizQuestions as $question)
@@ -27,12 +29,14 @@
 									{{$result->answer}}
 								</td>
 								<td>
-									{{$result->marks}}
+									{{$result->marks}}/{{$question->marks}}
 								</td>
 								@endif
 							@endforeach
 
+						@if($quiz->show_correct=="1")
 							<td>{{$question->correctAnswer()}}</td>
+						@endif
 							
 						</tr>
 						@endforeach
@@ -41,11 +45,16 @@
 						<thead>
 							<th></th>
 							<th>Total:</th>
-							<th>{{$quiz_participation->marks}}</th>
+							<th>{{$quiz_participation->marks}}/{{$quiz->total_marks}}({{($quiz_participation->marks/$quiz->total_marks)*100}}%)</th>
 							<th></th>
 						</thead>
 					</tr>
 				</table>
+			</div>
+			<div class="card-footer">
+				@if(!$quiz_participation->evaluation_complete())
+				<div class="text-center alert alert-info">*Check back again after your teacher evaluates the fill in the gaps questions*</div>
+				@endif
 			</div>
 		</div>
 		

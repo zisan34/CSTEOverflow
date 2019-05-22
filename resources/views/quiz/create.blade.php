@@ -51,6 +51,18 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Number Of True False:</label>
+						<div class="col-md-6">
+							<input type="number" class="form-control" name="true_false" min="0" 
+								value="@php
+								if(old('mcq'))
+								echo old('mcq');
+								else 
+								echo "1";
+								@endphp" >
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-md-6 col-form-label text-center">Number of Fill in the gaps:</label>
 						<div class="col-md-6">
 							<input type="number" class="form-control" name="fig" min="0" 
@@ -63,11 +75,77 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Number of Short Questions:</label>
+						<div class="col-md-6">
+							<input type="number" class="form-control" name="short_ques" min="0" 
+								value="@php
+								if(old('short_ques'))
+								echo old('short_ques');
+								else 
+								echo "1";
+								@endphp" >
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Quiz Total Marks:</label>
+						<div class="col-md-6">
+							<input type="number" class="form-control" name="total_marks" min="1" 
+								value="@php
+								if(old('total_marks'))
+								echo old('total_marks');
+								else 
+								echo "1";
+								@endphp"  required>
+						</div>
+					</div>
+
+					<div class="form-group row">
 						<label class="col-md-6 col-form-label text-center">Quiz Secret Key:</label>
 						<div class="col-md-6">
 							<input type="" class="form-control" name="key" value="{{old('key')}}">
 						</div>
 					</div>
+
+
+
+
+					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Show Correct answer after Completion?:</label>
+						<div class="col-md-6">							
+						    <div class="form-control">
+						    	<div class="form-check form-check-inline">
+						        <input class="form-check-input" type="radio" name="show_correct" value="0" required checked>
+						        <label class="form-check-label" for="inlineRadio1">No</label>
+							    </div>
+							    
+							    <div class="form-check form-check-inline">
+							        <input class="form-check-input" type="radio" name="show_correct" value="1" required>
+							        <label class="form-check-label" for="inlineRadio2">Yes</label>
+							    </div>
+						    </div>
+
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Allow Multiple Attempt?:</label>
+						<div class="col-md-6">
+							<div class="form-control">
+								<div class="form-check form-check-inline">
+							        <input class="form-check-input" type="radio" name="multiple_attempt" value="0" required checked>
+							        <label class="form-check-label" for="inlineRadio1">No</label>
+							    </div>
+							    <div class="form-check form-check-inline">
+							        <input class="form-check-input" type="radio" name="multiple_attempt" value="1" required>
+							        <label class="form-check-label" for="inlineRadio2">Yes</label>
+							    </div>
+						    </div>
+
+						</div>
+					</div>
+
+
+
 					<div class="form-group row">
 						<label class="col-md-6 col-form-label text-center">Quiz Message<small> (optional)</small>:</label>
 						<div class="col-md-6">

@@ -19,13 +19,19 @@ class CreateQuizzesTable extends Migration
             $table->string('title');
             $table->string('topic');
             $table->unsignedInteger('time');
-            $table->boolean('enabled')->default('1');
+            $table->boolean('enabled')->default('0');
+            $table->integer('total_marks');
+            $table->boolean('show_correct')->default('1');
+            $table->boolean('multiple_attempt')->default('0');
             $table->string('key');
             $table->unsignedInteger('mcq');
             $table->unsignedInteger('fig');
+            $table->unsignedInteger('true_false');            
+            $table->unsignedInteger('short_ques');
             $table->string('message')->nullable();
             $table->timestamps();
         });
+        DB::statement("ALTER TABLE quizzes AUTO_INCREMENT = 1000;");
     }
 
     /**

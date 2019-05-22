@@ -16,8 +16,9 @@ class CreateQQsAnswersTable extends Migration
         Schema::create('q_qs_answers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('quiz_question_id');
-            $table->string('answer');
+            $table->text('answer');
             $table->boolean('correct')->default('0');
+            $table->integer('marks')->nullable();
             $table->timestamps();
         });
     }

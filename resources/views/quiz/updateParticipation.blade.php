@@ -27,8 +27,9 @@
 					<td>{{$result->marks}}</td>
 					<td>
 						@if($result->QuizQuestion->question_type=="Fill In The Gaps")
-							@if($result->marks<1)
-								<a href="{{ route('onlineExam.participation.updateFIGresult',['id'=>encrypt($result->id)]) }}" class="btn btn-sm btn-success">Correct</a>
+							@if(!$result->marks)
+								<a href="{{ route('onlineExam.participation.updateFIGresult',['id'=>encrypt($result->id),'status'=>1]) }}" class="btn btn-sm btn-success">Correct</a>
+								<a href="{{ route('onlineExam.participation.updateFIGresult',['id'=>encrypt($result->id),'status'=>0]) }}" class="btn btn-sm btn-danger">Incorrect</a>
 							@endif
 						@elseif($result->QuizQuestion->question_type=="Short Question")
 							<form action="{{ route('onlineExam.participation.updateSQresult') }}" method="post">

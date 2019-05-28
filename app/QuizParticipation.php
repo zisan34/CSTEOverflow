@@ -24,12 +24,17 @@ class QuizParticipation extends Model
 
     public function evaluation_complete()
     {
-        foreach($this->QuizResult as $result)
+        if($this->QuizResult->count()>0)
         {
-            if(!$result->marks)
-                return false;
-        }
+            foreach($this->QuizResult as $result)
+            {
+                if(!$result->marks)
+                    return false;
+            }            
         return true;
+        }
+        return false;
+
     }
 
 

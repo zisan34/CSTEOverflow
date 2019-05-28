@@ -15,7 +15,7 @@
 				<th>Evaluation Status</th>
 			</thead>
 			<tbody>
-				@foreach($quiz->QuizParticipation as $participation)
+				@foreach($quiz->QuizParticipation->sortByDesc('created_at') as $participation)
 				<tr>
 					<td>{{$participation->user->name}}</td>
 					<td>{{$participation->marks}}/{{$quiz->total_marks}}</td>

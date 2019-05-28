@@ -23,16 +23,21 @@
 						@foreach($quiz->QuizQuestions as $question)
 						<tr>
 							<td>{{$question->question}}</td>
-							@foreach($quiz_participation->QuizResult()->get() as $result)
-								@if($result->quiz_question_id==$question->id)
-								<td>
-									{{$result->answer}}
-								</td>
-								<td>
-									{{$result->marks}}/{{$question->marks}}
-								</td>
-								@endif
-							@endforeach
+							@if($quiz_participation->QuizResult()->count()>0)
+								@foreach($quiz_participation->QuizResult()->get() as $result)
+									@if($result->quiz_question_id==$question->id)
+									<td>
+										{{$result->answer}}
+									</td>
+									<td>
+										{{$result->marks}}/{{$question->marks}}
+									</td>
+									@endif
+								@endforeach
+							@else
+							<td></td>
+							<td></td>
+							@endif
 
 						@if($quiz->show_correct=="1")
 							<td>{{$question->correctAnswer()}}</td>
@@ -53,7 +58,7 @@
 			</div>
 			<div class="card-footer">
 				@if(!$quiz_participation->evaluation_complete())
-				<div class="text-center alert alert-info">*Check back again after your teacher evaluates the fill in the gaps questions*</div>
+				<div class="text-center alert alert-info">*Check back again after your teacher evaluates manually*</div>
 				@endif
 			</div>
 		</div>

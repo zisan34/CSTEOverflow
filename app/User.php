@@ -46,13 +46,13 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Quiz');
     }
-    public function participated($id)
+    public function participated($quiz_id,$participation_id)
     {
         $quiz=Quiz::find($id);
 
         foreach($this->QuizParticipation as $user_quiz_participation)
         {
-            if($user_quiz_participation->Quiz==$quiz)
+            if($user_quiz_participation->Quiz==$quiz&&$user_quiz_participation->id!=$participation_id)
                 return true;
         }
         return false;

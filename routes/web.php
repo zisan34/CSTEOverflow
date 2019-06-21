@@ -15,6 +15,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function() {
+
+Route::get('/dashboard','BackendController@index')->name('dashboard');
+
+Route::get('/courses','BackendController@courses')->name('courses');
+
+Route::post('/add/course','BackendController@addCourse')->name('add.course');
+
+Route::get('/delete/course/{id}','BackendController@deleteCourse')->name('delete.course');
+Route::get('/users','BackendController@users')->name('users');
+Route::get('/user/enable/{id}','BackendController@enableUser')->name('user.enable');
+Route::get('/user/disable/{id}','BackendController@disableUser')->name('user.disable');
+Route::get('/user/delete/{id}','BackendController@deleteUser')->name('user.delete');
+
+
+
+
+
+});
+
+
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -41,7 +64,7 @@ Route::get('/view/{id}','QuizesController@view')->name('onlineExam.view');
 
 Route::get('/participants/{id}','QuizesController@quizParticipations')->name('onlineExam.participations');
 Route::get('/participation/manualcheck/{id}','QuizesController@manualCheckParticipation')->name('onlineExam.participation.manual');
-Route::get('/participation/manualcheck/updateresult/{id}','QuizesController@updateFigResult')->name('onlineExam.participation.updateFIGresult');
+Route::get('/participation/manualcheck/updateresult/{id}/{status}','QuizesController@updateFigResult')->name('onlineExam.participation.updateFIGresult');
 Route::post('/participation/manualcheck/updateresult','QuizesController@updateSqResult')->name('onlineExam.participation.updateSQresult');
 
 
@@ -55,6 +78,7 @@ Route::post('/edit/updateQuestionAnswer','QuizesController@updateQA')->name('onl
 Route::get('/participate','QuizesController@participate')->name('onlineExam.participate');
 Route::post('/participate/quiz_info','QuizesController@quiz_info')->name('onlineExam.quiz_info');
 Route::post('/participate/start','QuizesController@quizStart')->name('onlineExam.start');
+Route::get('/participate/start/{quiz_id}','QuizesController@startQuiz')->name('onlineExam.quiz.start');
 Route::post('/participate/quiz/submit','QuizesController@quizSubmit')->name('onlineExam.submit');
 Route::get('/showResult/{quiz_participation_id}','QuizesController@showResult')->name('onlineExam.result');
 

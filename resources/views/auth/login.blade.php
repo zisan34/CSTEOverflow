@@ -11,6 +11,12 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
+                        @error('enabled')
+
+                        <div class="alert alert-danger text-center">{{$message}}</div>
+
+                        @enderror
+
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
 

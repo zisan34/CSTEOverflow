@@ -492,8 +492,33 @@ class QuizesController extends Controller
         $questions=$quiz->QuizQuestions->shuffle();
         session(['questions'=>$questions]);
 
-        session(['time'=>time()]);
 
+        $quiz_participation=QuizParticipation::create([
+        'quiz_id'=>$quiz->id,
+        'user_id'=>Auth::id()
+        ]);
+
+
+        session(['start_time'=>time()]);
+        session(['time_limit'=>$quiz->time]);
+        session(['quiz_participation'=>$quiz_participation]);
+
+        return redirect()->route('onlineExam.quiz.start',['quiz_id'=>encrypt($quiz->id)]);
+
+
+        
+    }
+    public function startQuiz($quiz_id)
+    {
+        $id=decrypt($quiz_id);
+        $quiz=Quiz::find($id);
+
+        // $questions=$quiz->QuizQuestions->shuffle();
+
+        $questions=session('questions')->shuffle();
+
+
+        session(['questions'=>$questions]);
 
         return view('quiz.startexam')
                 ->with('quiz',$quiz)
@@ -502,7 +527,12 @@ class QuizesController extends Controller
 
     public function quizSubmit(Request $request)
     {
-        return session('time')." ".time();
+        if(session('start_time')+60*session('time_limit')+10< time())
+        {
+            Session::flash('error','Time exceeded');
+            return redirect()->route('onlineExam');
+        }
+
         $this->validate($request,[
             'quiz_id'=>'required'
         ]);
@@ -519,20 +549,17 @@ class QuizesController extends Controller
 
         $quiz=Quiz::find($quiz_id);
 
+        $quiz_participation=session('quiz_participation');
 
         if($quiz->multiple_attempt=="0")
         {
-            if(Auth::user()->participated($quiz->id))
-            {                
+            if(Auth::user()->participated($quiz->id,$quiz_participation->id))
+            {
                 Session::flash('error','Multiple attempt is not allowed for this quiz');
                 return redirect()->back();
             }
         }
 
-        $quiz_participation=QuizParticipation::create([
-            'quiz_id'=>$quiz_id,
-            'user_id'=>Auth::id()
-        ]);
 
         $count=0;
         $marks=0;
@@ -603,11 +630,15 @@ class QuizesController extends Controller
         $participation=QuizParticipation::find($id);
         return view('quiz.updateParticipation')->with('participation',$participation);
     }
-    public function updateFigResult($id)
+    public function updateFigResult($id,$status)
     {
         $r_id=Crypt::decrypt($id);
         $result=QuizResult::find($r_id);
-        $marks=$result->QuizQuestion->marks;
+        if($status==0)
+            $marks="0";
+        else
+            $marks=$result->QuizQuestion->marks;
+
         $result->marks=$marks;
         $result->save();
 

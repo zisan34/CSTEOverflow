@@ -74,7 +74,7 @@ class QuizzesTableSeeder extends Seeder
             $count=0;
 
             foreach ($answers[$i] as $answer) {
-                $qans=new QQsAnswer;
+                $qans=new App\QQsAnswer;
 
                 $qans->quiz_question_id=$qques->id;
                 $qans->answer=$answer;
@@ -98,7 +98,7 @@ class QuizzesTableSeeder extends Seeder
             $count=0;
 
             foreach ($answers[$i] as $answer) {
-                $qans=new QQsAnswer;
+                $qans=new App\QQsAnswer;
 
                 $qans->quiz_question_id=$qques->id;
                 $qans->answer=$answer;
@@ -114,7 +114,7 @@ class QuizzesTableSeeder extends Seeder
         for($i=$quiz->mcq+$quiz->true_false; $i<$quiz->mcq+$quiz->true_false+$quiz->fig; $i++)
         {
 
-            $qques=QuizQuestion::Create([
+            $qques=App\QuizQuestion::Create([
                 'quiz_id'=>$quiz->id,
                 'question'=>$questions[$i],
                 'question_type'=>'Fill In The Gaps',
@@ -127,7 +127,7 @@ class QuizzesTableSeeder extends Seeder
         for($i=$quiz->mcq+$quiz->true_false+$quiz->fig; $i<$quiz->mcq+$quiz->true_false+$quiz->fig+$quiz->short_ques ;$i++)
         {
 
-            $qques=QuizQuestion::Create([
+            $qques=App\QuizQuestion::Create([
                 'quiz_id'=>$quiz->id,
                 'question'=>$questions[$i],
                 'question_type'=>'Short Question',

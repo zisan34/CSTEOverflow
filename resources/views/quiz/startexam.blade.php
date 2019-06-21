@@ -7,9 +7,14 @@
 		<div class="card">
 			<div class="card-header">
 				<strong>Questions</strong>
-				@php					
-				set_time_limit($quiz->time*60);
-				@endphp
+				<div class="float-right">
+					Time Remaining:
+					<span id="counter">
+						<span id="minute">{{$quiz->time}}</span>:
+						<span id="second">0</span>
+
+					</span>
+				</div>
 			</div>
 			<div class="card-body">
 				@include('inc.errors')
@@ -17,12 +22,12 @@
 					@csrf
 					<input type="hidden" name="quiz_id" value="{{encrypt($quiz->id)}}">
 					
-					@if(count($quiz->QuizQuestions)>0)
+					@if(count($questions)>0)
 					@php
 						$count=0;
 					@endphp
 
-					@foreach($quiz->QuizQuestions as $question)
+					@foreach($questions as $question)
 
 					<input type="hidden" name="answer[{{$count}}]" value="">			
 
@@ -68,13 +73,7 @@
 
 					<input type="submit" name="end_quiz" class="btn btn-primary" value="End Quiz">
 
-<script  type="text/javascript">
-window.onload=function(){ 
-    window.setTimeout(function(){
-		document.getElementById('timeOut').submit();
-		}, 1000*<?php echo $quiz->time ?>*60);
-};
-</script>
+
 
 				</form>
 			</div>
@@ -134,6 +133,28 @@ window.addEventListener("beforeunload", function (e) {
 });
 
 </script> --}}
+
+<script  type="text/javascript">
+window.onload=function(){ 
+    window.setTimeout(function(){
+		document.getElementById('timeOut').submit();
+		}, 1000*<?php echo $quiz->time ?>*60);
+};
+</script>
+
+<script type="text/javascript">
+	var counter=document.getElementById('counter');
+	var time=<?php echo $quiz->time ?>*60;
+	var my_counter=setInterval(function(){
+		minute=Math.floor(time/60);
+		second=time%60;
+		document.getElementById('minute').innerHTML=minute;
+		document.getElementById('second').innerHTML=second;
+
+		time--;
+	},1000);
+</script>
+
 
 <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
 <script src="{{ asset('js/jquery.backDetect.js') }}"></script>

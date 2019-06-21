@@ -46,9 +46,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Quiz');
     }
-    public function participated($quiz_id,$participation_id)
+    public function participated($quiz_id,$participation_id=NULL)
     {
-        $quiz=Quiz::find($id);
+        $quiz=Quiz::find($quiz_id);
 
         foreach($this->QuizParticipation as $user_quiz_participation)
         {
@@ -61,5 +61,17 @@ class User extends Authenticatable
     public function QuizParticipation()
     {
         return $this->hasMany('App\QuizParticipation');
+    }
+
+    public function admin()
+    {
+        if($this->u_type=='Admin')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

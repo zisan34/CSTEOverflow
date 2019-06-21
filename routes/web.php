@@ -15,6 +15,29 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function() {
+
+Route::get('/dashboard','BackendController@index')->name('dashboard');
+
+Route::get('/courses','BackendController@courses')->name('courses');
+
+Route::post('/add/course','BackendController@addCourse')->name('add.course');
+
+Route::get('/delete/course/{id}','BackendController@deleteCourse')->name('delete.course');
+Route::get('/users','BackendController@users')->name('users');
+Route::get('/user/enable/{id}','BackendController@enableUser')->name('user.enable');
+Route::get('/user/disable/{id}','BackendController@disableUser')->name('user.disable');
+Route::get('/user/delete/{id}','BackendController@deleteUser')->name('user.delete');
+
+
+
+
+
+});
+
+
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

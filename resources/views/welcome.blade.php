@@ -8,6 +8,8 @@
 <!-- include summernote css/js -->
 
 <link href="{{asset('summernote/summernote-lite.css')}}" rel="stylesheet">
+<link href="{{ asset('bootstrap-multiselect/bootstrap-multiselect.css') }}" rel="stylesheet">
+
 
 
 @endsection
@@ -25,7 +27,19 @@
                         <label>Let's Discuss:</label>
                         <textarea class="form-control" id="post_details" name="post_details" placeholder="What's being Overflowed?" overlay="auto"></textarea>
                     </div>
-                    <a class="btn btn-primary" href="">Post</a>
+                    <div class="form-group">                      
+                      <label>Tags:</label>
+                      <select id="example-getting-started" multiple="multiple">
+                          <option value="cheese">Cheese</option>
+                          <option value="tomatoes">Tomatoes</option>
+                          <option value="mozarella">Mozzarella</option>
+                          <option value="mushrooms">Mushrooms</option>
+                          <option value="pepperoni">Pepperoni</option>
+                          <option value="onions">Onions</option>
+                      </select>
+                    </div>
+
+                    <input type="submit" name="submit" value="Post" class="btn btn-primary">
                 </form>
             @endauth
 
@@ -175,6 +189,8 @@
 {{-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> --}}
 <script src="{{asset('summernote/summernote-lite.js')}}"></script>
 
+<script src=" {{ asset('bootstrap-multiselect/bootstrap-multiselect.js') }}"></script>
+
 <script>
 $(document).ready(function() {
     $('#post_details').summernote({
@@ -198,6 +214,15 @@ $(document).ready(function() {
     });
 });
     
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#example-getting-started').multiselect({
+            includeSelectAllOption: true,
+            selectAllValue: 'select-all-value'
+        });
+    });
 </script>
 
 @endsection

@@ -11,20 +11,25 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'FrontendController@welcome');
 
 
-Route::group(['prefix' => 'admin', 'middleware'=>'auth'], function() {
+Route::group(['prefix' => 'admin', 'middleware'=>'admin'], function() {
 
 Route::get('/dashboard','BackendController@index')->name('dashboard');
 
+
 Route::get('/courses','BackendController@courses')->name('courses');
-
 Route::post('/add/course','BackendController@addCourse')->name('add.course');
-
 Route::get('/delete/course/{id}','BackendController@deleteCourse')->name('delete.course');
+
+
+Route::get('/tags','BackendController@tags')->name('tags');
+Route::post('/add/tag','BackendController@addTag')->name('add.tag');
+Route::get('/delete/tag/{id}','BackendController@deleteTag')->name('delete.tag');
+
+
+
 Route::get('/users','BackendController@users')->name('users');
 Route::get('/user/enable/{id}','BackendController@enableUser')->name('user.enable');
 Route::get('/user/disable/{id}','BackendController@disableUser')->name('user.disable');
@@ -42,7 +47,15 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Auth::routes();
+
+Route::group(['prefix'=>'post','middleware'=>'auth'],function(){
+
+	Route::post('/save','PostsController@save')->name('post.save');
+	Route::get('/view/{slug}/{enc_id}','PostsController@viewPost')->name('post.view');
+
+});
+
+
 
 
 Route::group(['prefix' => 'onlineExam', 'middleware'=>'auth'], function() {

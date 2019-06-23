@@ -40,8 +40,18 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="{{ URL('/') }}">Home</a>
             </li>
+            
+            @if (Auth::check())
+            @if(Auth::user()->admin())
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('dashboard') }}">Admin Dashboard</a>
+            </li>
+
+            @endif
+            @endif
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('onlineExam') }}">Online Exam</a>
             </li>
@@ -49,7 +59,7 @@
                 <a class="nav-link" href="#">Notice</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Posts</a>
+                <a class="nav-link" href="/">Posts</a>
             </li>
 
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Course;
 use App\User;
+use App\Tag;
 
 class BackendController extends Controller
 {
@@ -52,6 +53,40 @@ class BackendController extends Controller
         }
         return redirect()->back();
     }
+
+
+
+    public function tags()
+    {
+        $tags=Tag::all();
+        return view('admin.tags')->with('tags',$tags);
+    }
+    public function addTag(Request $request)
+    {
+        $this->validate($request,[
+            'title'=>'required'
+        ]);
+
+        $tag=new Tag;
+        $tag->title=$request->title;
+        $tag->save();
+
+        return redirect()->back();
+    }
+    public function deleteTag($id)
+    {
+        $tag=Tag::find($id);
+        if($tag)
+        {
+            $tag->delete();
+            return redirect()->back();
+
+        }
+        return redirect()->back();
+    }
+
+
+
 
     public function users()
     {

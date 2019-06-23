@@ -10,6 +10,12 @@
 <link href="{{asset('summernote/summernote-lite.css')}}" rel="stylesheet">
 <link href="{{ asset('bootstrap-multiselect/bootstrap-multiselect.css') }}" rel="stylesheet">
 
+<style>
+  .dropdown-menu {
+    z-index: 2000;
+  }
+</style>
+
 
 
 @endsection
@@ -22,20 +28,24 @@
         <div class="col-lg-8 col-md-12 mx-auto">
             
             @auth
-                <form>
+                <form method="post" action="{{ route('post.save') }}">
+                  @include('inc.errors')
+                  @csrf
                     <div class="form-group">
-                        <label>Let's Discuss:</label>
-                        <textarea class="form-control" id="post_details" name="post_details" placeholder="What's being Overflowed?" overlay="auto"></textarea>
+                      <label>Title</label>
+                      <input type="text" name="title" class="form-control">
                     </div>
-                    <div class="form-group">                      
+                    <div class="form-group">
+                        <label>Details:</label>
+                        <textarea class="form-control" id="post_details" name="content" placeholder="What's being Overflowed?" overlay="auto"></textarea>
+                    </div>
+                    <div class="form-group">
                       <label>Tags:</label>
-                      <select id="example-getting-started" multiple="multiple">
-                          <option value="cheese">Cheese</option>
-                          <option value="tomatoes">Tomatoes</option>
-                          <option value="mozarella">Mozzarella</option>
-                          <option value="mushrooms">Mushrooms</option>
-                          <option value="pepperoni">Pepperoni</option>
-                          <option value="onions">Onions</option>
+                      <select id="example-getting-started" multiple="multiple" name="tags[]" >
+                        @foreach($tags as $tag)
+                          <option value="{{$tag->id}}" >{{$tag->title}}</option>
+
+                        @endforeach
                       </select>
                     </div>
 
@@ -44,73 +54,38 @@
             @endauth
 
             <hr>
+            
+            @foreach($posts as $post)
+            <div class="post-preview">
+              <a href="{{ route('post.view',['slug'=>$post->slug,'id'=>encrypt($post->id)]) }}">
+                <h2 class="post-title">
+                  {{$post->title}}
+                </h2>
+              </a>
+              <p>
+                {!!$post->content!!} <a href="" style="text-decoration:none; color: blue">See more</a>
+              </p>
+              <p class="post-meta">Posted by
+                <a href="">{{$post->user->name}}</a>
+                {{$post->created_at->toDayDateTimeString()}}</p>
+            </div>
+            <hr>
+            @endforeach
 
-            <div class="post-preview">
-              <a href="post.html">
-                <h2 class="post-title">
-                  Man must explore, and this is exploration at its greatest
-                </h2>
-                <h3 class="post-subtitle">
-                  Problems look mighty small from 150 miles up
-                </h3>
-              </a>
-              <p class="post-meta">Posted by
-                <a href="#">Start Bootstrap</a>
-                on September 24, 2019</p>
-            </div>
-            <hr>
-            <div class="post-preview">
-              <a href="post.html">
-                <h2 class="post-title">
-                  I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.
-                </h2>
-              </a>
-              <p class="post-meta">Posted by
-                <a href="#">Start Bootstrap</a>
-                on September 18, 2019</p>
-            </div>
-            <hr>
-            <div class="post-preview">
-              <a href="post.html">
-                <h2 class="post-title">
-                  Science has not yet mastered prophecy
-                </h2>
-                <h3 class="post-subtitle">
-                  We predict too much for the next year and yet far too little for the next ten.
-                </h3>
-              </a>
-              <p class="post-meta">Posted by
-                <a href="#">Start Bootstrap</a>
-                on August 24, 2019</p>
-            </div>
-            <hr>
-            <div class="post-preview">
-              <a href="post.html">
-                <h2 class="post-title">
-                  Failure is not an option
-                </h2>
-                <h3 class="post-subtitle">
-                  Many say exploration is part of our destiny, but it’s actually our duty to future generations.
-                </h3>
-              </a>
-              <p class="post-meta">Posted by
-                <a href="#">Start Bootstrap</a>
-                on July 8, 2019</p>
-            </div>
+
             <hr>
             <!-- Pager -->
-            <div class="clearfix">
-              <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+            {{$posts->links()}}
 
-        <br><br>
-            </div>
+            
         </div>
 
 
         <!-- Sidebar Widgets Column -->
         {{-- col-lg-8 col-md-10 mx-auto --}}
-        <br>
         <div class="col-lg-4 col-md-12">
+
+          <br>
 
 
             <a href="#" class="btn btn-block btn-info">Publish New Notice</a>
@@ -133,7 +108,7 @@
 
             <!-- Categories Widget -->
             <div class="card my-4">
-              <h5 class="card-header">Categories</h5>
+              <h5 class="card-header">Popular Tags</h5>
               <div class="card-body">
                 <div class="row">
                   <div class="col-lg-6">
@@ -213,7 +188,7 @@ $(document).ready(function() {
 
     });
 });
-    
+
 </script>
 
 <script type="text/javascript">

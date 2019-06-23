@@ -5,39 +5,33 @@
     <div class="row justify-content-center">
         <div class="">
             <div class="panel  panel-default">
-                <div class="panel-heading">Courses</div>
+                <div class="panel-heading">Tags</div>
 
                 <div class="panel-body">
                     @include('inc.errors')
-                    <form action="{{ route('add.course') }}" method="post">
+                    <form action="{{ route('add.tag') }}" method="post">
                         @csrf
                         <div class="form-group">
 
-                        <label>Course Title</label>                        
+                        <label>Tag Title</label>                        
                             <input class="form-control" type="text" name="title">
                         </div>
-
-                        <div class="form-group">
-
-                        <label>Course Code</label>                        
-                            <input class="form-control" type="text" name="code" placeholder="*optional*">
-                        </div>
-                        <input type="submit" class="btn btn-primary btn-sm" value="Add new Course">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Add new Tag">
                     </form>
                 </div>
 
                 <div class="panel-body">
                     <table class="table">
                         <thead>
-                            <th>Courses</th>
+                            <th>Tags</th>
                             <th>Action</th>
                         </thead>
                         <tbody>
-                            @foreach($courses as $course)
+                            @foreach($tags as $tag)
                             <tr>
-                            <td>{{$course->title}}</td>
+                            <td>{{$tag->title}}</td>
                             <td>
-                                <a href="{{ route('delete.course',['id'=>$course->id]) }}" class="btn btn-sm btn-danger">Delete</a>
+                                <a href="{{ route('delete.tag',['id'=>$tag->id]) }}" class="btn btn-sm btn-danger">Delete</a>
                             </td>
                             </tr>
                             @endforeach

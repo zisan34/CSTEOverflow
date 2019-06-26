@@ -14,6 +14,25 @@
   .dropdown-menu {
     z-index: 2000;
   }
+
+/*a {
+  color: #0254EB
+}
+a:visited {
+  color: #0254EB
+}
+a.morelink {
+  text-decoration:none;
+  outline: none;
+}
+.morecontent span {
+  display: none;
+}
+.comment {
+  width: 400px;
+  background-color: #fff;
+  margin: 10px;
+}*/
 </style>
 
 
@@ -51,9 +70,10 @@
 
                     <input type="submit" name="submit" value="Post" class="btn btn-primary">
                 </form>
+
+              <hr>
             @endauth
 
-            <hr>
             
             @foreach($posts as $post)
             <div class="post-preview">
@@ -62,9 +82,9 @@
                   {{$post->title}}
                 </h2>
               </a>
-              <p>
-                {!!$post->content!!} <a href="" style="text-decoration:none; color: blue">See more</a>
-              </p>
+              <div class="comment more">
+                {!!$post->content!!} <a href="{{ route('post.view',['slug'=>$post->slug,'id'=>encrypt($post->id)]) }}" style="text-decoration:none; color: blue">See more</a>
+              </div>
               <p class="post-meta">Posted by
                 <a href="">{{$post->user->name}}</a>
                 {{$post->created_at->toDayDateTimeString()}}</p>
@@ -75,7 +95,9 @@
 
             <hr>
             <!-- Pager -->
+            @if($posts->links())
             {{$posts->links()}}
+            @endif
 
             
         </div>
@@ -83,75 +105,9 @@
 
         <!-- Sidebar Widgets Column -->
         {{-- col-lg-8 col-md-10 mx-auto --}}
-        <div class="col-lg-4 col-md-12">
+@include('inc.sidebar')
 
-          <br>
-
-
-            <a href="#" class="btn btn-block btn-info">Publish New Notice</a>
-
-            <a href="#" class="btn btn-block btn-info">Create New Test</a>
-
-
-            <!-- Search Widget -->
-            <div class="card my-4">
-              <h5 class="card-header">Search</h5>
-              <div class="card-body">
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search for...">
-                  <span class="input-group-btn">
-                    <button class="btn btn-secondary btn-xs" type="button">Go!</button>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Categories Widget -->
-            <div class="card my-4">
-              <h5 class="card-header">Popular Tags</h5>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-lg-6">
-                    <ul class="list-unstyled mb-0">
-                      <li>
-                        <a href="#">Web Design</a>
-                      </li>
-                      <li>
-                        <a href="#">HTML</a>
-                      </li>
-                      <li>
-                        <a href="#">Freebies</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="col-lg-6">
-                    <ul class="list-unstyled mb-0">
-                      <li>
-                        <a href="#">JavaScript</a>
-                      </li>
-                      <li>
-                        <a href="#">CSS</a>
-                      </li>
-                      <li>
-                        <a href="#">Tutorials</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Side Widget -->
-            <div class="card my-4">
-              <h5 class="card-header">Side Widget</h5>
-              <div class="card-body">
-                You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
-              </div>
-            </div>
-
-          </div>
-
-        </div>
+      </div>
 </div>
 
 <hr>
@@ -185,6 +141,18 @@ $(document).ready(function() {
      //    ['redo'],
      //    ['codeview']
      //  ]
+  toolbar: [
+  ['style', ['style']],
+  ['font', ['bold', 'underline', 'clear']],
+  ['fontname', ['fontname']],
+  ['fontsize', ['fontsize']],
+  ['color', ['color']],
+  ['para', ['ul', 'ol', 'paragraph']],
+  ['table', ['table']],
+  ['insert', ['link', 'picture']],
+  ['view', ['fullscreen', 'help']]
+  ]
+
 
     });
 });
@@ -199,5 +167,42 @@ $(document).ready(function() {
         });
     });
 </script>
+
+{{-- see more button --}}
+{{-- <script>
+  $(document).ready(function() {
+  var showChar = 100;
+  var ellipsestext = "...";
+  var moretext = "more";
+  var lesstext = "less";
+  $('.more').each(function() {
+    var content = $(this).html();
+
+    if(content.length > showChar) {
+
+      var c = content.substr(0, showChar);
+      var h = content.substr(showChar-1, content.length - showChar);
+
+      var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+
+      $(this).html(html);
+    }
+
+  });
+
+  $(".morelink").click(function(){
+    if($(this).hasClass("less")) {
+      $(this).removeClass("less");
+      $(this).html(moretext);
+    } else {
+      $(this).addClass("less");
+      $(this).html(lesstext);
+    }
+    $(this).parent().prev().toggle();
+    $(this).prev().toggle();
+    return false;
+  });
+});
+</script> --}}
 
 @endsection

@@ -47,6 +47,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Post');
     }
 
+    public function notices()
+    {
+        return $this->hasMany('App\Notice');
+    }
+
     public function quizzes()
     {
         return $this->hasMany('App\Quiz');
@@ -71,6 +76,39 @@ class User extends Authenticatable
     public function admin()
     {
         if($this->u_type=='Admin')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function office_stuff()
+    {
+        if($this->u_type=='Office Stuff')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function teacher()
+    {
+        if($this->u_type=='Teacher')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function student()
+    {
+        if($this->u_type=='Student')
         {
             return true;
         }

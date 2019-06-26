@@ -13,7 +13,7 @@
 
           <a href="{{ route('onlineExam.create') }}" class="btn btn-primary btn-block">Create New Quiz</a>
           <a href="{{ route('onlineExam.participate') }}" class="btn btn-primary btn-block">Participate in Quiz</a>
-<br>
+          <br>
 		{{-- @if(Auth::user()->type=="Teacher") --}}
           <div class="card">
           	<div class="card-header">Previously Created Quizes:</div>

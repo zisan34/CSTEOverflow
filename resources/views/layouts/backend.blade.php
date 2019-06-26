@@ -44,7 +44,7 @@
             </li>
             @if(Auth::user()->admin())
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">Admin Dashboard</a>
+                <a class="nav-link" href="{{ route('dashboard') }}">Admin Panel</a>
             </li>
 
             @endif
@@ -109,50 +109,50 @@
     </div>
   </header>
 
-<div class="container-fluid">
+<div class="container">
 
-    <div class="row">
-                <div class="col-md-3">
-            <ul class="list-group">
+  <div class="row">
+    <div class="col-md-3">
+      <ul class="list-group">
 
-            <li class="list-group-item">
-            <a href="{{ route('home') }}">Home</a></li>
+        <li class="list-group-item">
+        <a href="{{ route('home') }}">Home</a></li>
 
-            <li class="list-group-item">
-            <a href="{{ route('courses') }}">Courses</a></li>
+        <li class="list-group-item">
+        <a href="{{ route('courses') }}">Courses</a></li>
 
-            <li class="list-group-item">
-            <a href="{{ route('tags') }}">Tags</a></li>
+        <li class="list-group-item">
+        <a href="{{ route('tags') }}">Tags</a></li>
 
-            <li class="list-group-item">
-            <a href="">All Posts</a></li>       
+        <li class="list-group-item">
+        <a href="">All Posts</a></li>       
 
 
 
-    {{--         <li class="list-group-item">
-            <a href="{{ route('category.create') }}">Create new category</a></li> --}}
+        {{-- <li class="list-group-item">
+        <a href="{{ route('category.create') }}">Create new category</a></li> --}}
 
-            <li class="list-group-item">
-            <a href="">All Trashed Posts</a></li>
+        <li class="list-group-item">
+        <a href="">All Trashed Posts</a></li>
 
-            <li class="list-group-item">
-            <a href="">My Profile</a></li>
+        <li class="list-group-item">
+        <a href="">My Profile</a></li>
 
-            <li class="list-group-item">
-            <a href="{{ route('users') }}">Users</a></li>
+        <li class="list-group-item">
+        <a href="{{ route('users') }}">Users</a></li>
 
-            <li class="list-group-item">
-            <a href="">Create new User</a></li>
-            <li class="list-group-item">
-            <a href="">Site Settings</a></li>
+        <li class="list-group-item">
+        <a href="">Create new User</a></li>
+        <li class="list-group-item">
+        <a href="">Site Settings</a></li>
 
-            </ul>
-        </div>
-
-        <div class="col-md-8">
-                @yield('content')
-        </div>
+      </ul>
     </div>
+    
+    <div class="col-md-9">
+            @yield('content')
+    </div>
+  </div>
 
 </div>
 

@@ -46,7 +46,7 @@
             @if (Auth::check())
             @if(Auth::user()->admin())
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('dashboard') }}">Admin Dashboard</a>
+                <a class="nav-link" href="{{ route('dashboard') }}">Admin Panel</a>
             </li>
 
             @endif
@@ -56,10 +56,10 @@
                 <a class="nav-link" href="{{ route('onlineExam') }}">Online Exam</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Notice</a>
+                <a class="nav-link" href="{{ route('notice') }}">Notice</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/">Posts</a>
+                <a class="nav-link" href="/">File</a>
             </li>
 
 
@@ -106,7 +106,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            
+            &nbsp;
           </div>
         </div>
       </div>
@@ -116,7 +116,9 @@
 
 
   <!-- Main Content -->
+  <div class="container">
     @yield('content')
+  </div>
 
 
   <hr>

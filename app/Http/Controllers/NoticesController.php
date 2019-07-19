@@ -90,6 +90,11 @@ class NoticesController extends Controller
         return view('notice.view')->with('notice',$notice);
     }
 
+    public function show($path)
+    {
+        return response()->file($path);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

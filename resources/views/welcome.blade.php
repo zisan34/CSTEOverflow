@@ -47,6 +47,8 @@ a.morelink {
         <div class="col-lg-8 col-md-12 mx-auto">
             
             @auth
+                @if(!Auth::user()->office_stuff())
+                
                 <form method="post" action="{{ route('post.save') }}">
                   @include('inc.errors')
                   @csrf
@@ -71,20 +73,22 @@ a.morelink {
                     <input type="submit" name="submit" value="Post" class="btn btn-primary">
                 </form>
 
-              <hr>
+                <hr>
+
+                @endif
             @endauth
 
             
             @foreach($posts as $post)
             <div class="post-preview">
-              <a href="{{ route('post.view',['slug'=>$post->slug,'id'=>encrypt($post->id)]) }}">
+              <a href="{{ route('post.view',['id'=>encrypt($post->id)]) }}">
                 <h2 class="post-title">
                   {{$post->title}}
                 </h2>
               </a>
-              <div class="comment more">
+{{--               <div class="comment more">
                 {!!$post->content!!} <a href="{{ route('post.view',['slug'=>$post->slug,'id'=>encrypt($post->id)]) }}" style="text-decoration:none; color: blue">See more</a>
-              </div>
+              </div> --}}
               <p class="post-meta">Posted by
                 <a href="">{{$post->user->name}}</a>
                 {{$post->created_at->toDayDateTimeString()}}</p>

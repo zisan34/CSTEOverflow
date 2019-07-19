@@ -51,16 +51,29 @@
 
             @endif
             @endif
+            
+            @auth
+            @if(!Auth::user()->office_stuff())
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('onlineExam') }}">Online Exam</a>
             </li>
+
+            @endif
+            @endauth
+
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('notice') }}">Notice</a>
             </li>
+            
+            @auth
+            @if(!Auth::user()->office_stuff())
             <li class="nav-item">
-                <a class="nav-link" href="/">File</a>
+                <a class="nav-link" href="{{ route('files') }}">Course Content</a>
             </li>
+            @endif
+            @endauth
 
 
                         <!-- Authentication Links -->

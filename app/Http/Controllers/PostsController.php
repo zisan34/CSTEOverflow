@@ -40,7 +40,7 @@ class PostsController extends Controller
 
     	return redirect()->back();
     }
-    public function viewPost($slug,$enc_id)
+    public function viewPost($enc_id)
     {
     	$id=decrypt($enc_id);
     	$post=Post::find($id);

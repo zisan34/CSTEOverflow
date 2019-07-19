@@ -19,10 +19,10 @@
 </div>
 
 
-  <article>
+<article>
     <div class="container">
       <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto text-center">
+        <div class="col-lg-8 col-md-10 mx-auto">
         	{!!$post->content!!}
         </div>
       </div>
@@ -38,7 +38,7 @@
 	</div>
 	<div class="container">
       <div class="row">
-        <div class="col-lg-8 col-md-10">
+        <div class="col-lg-8 col-md-10 mx-auto">
         	@auth
                 <form method="post" action="{{ route('post.comment',['post_id'=>encrypt($post->id)]) }}">
             	    <label></label>
@@ -71,7 +71,7 @@
         </div>
       </div>
     </div>
-  </article>
+</article>
 
 
 @endsection

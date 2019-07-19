@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use App\Course;
 use App\User;
 use App\Tag;
-
+use App\Post;
+use App\Semester;
+use App\File;
+use App\Notice;
 class BackendController extends Controller
 {
     /**
@@ -82,6 +85,80 @@ class BackendController extends Controller
             return redirect()->back();
 
         }
+        return redirect()->back();
+    }
+
+    public function posts()
+    {
+        return view('admin.posts')->with('posts',Post::all());
+    }
+
+    public function deletePost($id)
+    {
+        $post=Post::find($id);
+
+        $post->delete();
+
+        return redirect()->back();
+    }
+
+    public function trashedPosts()
+    {
+        $posts=Post::onlyTrashed()->get();
+
+
+        return view('admin.trashedPosts')->with('posts',$posts);
+    }
+
+    public function destroyPost($id)
+    {
+        $post=Post::withTrashed()
+                ->where('id', $id);
+
+        $post->forceDelete();
+        return redirect()->back();
+    }
+    public function restorePost($id)
+    {
+        $post=Post::withTrashed()
+                ->where('id', $id)
+                ->restore();
+
+        return redirect()->back();
+    }
+
+
+
+
+    public function files()
+    {
+        
+        $semesters=Semester::all();
+        return view('admin.files')
+                                ->with('semesters',$semesters);
+    }
+    public function deleteFile($id)
+    {
+        $file=File::find($id);
+
+        $file->delete();
+
+        return redirect()->back();
+    }
+
+
+
+    public function notices()
+    {
+        $notices=Notice::all();
+        return view('admin.notices')->with('notices',$notices);
+    }
+    public function deleteNotice($id)
+    {
+        $notice=Notice::find($id);
+
+        $notice->delete();
+
         return redirect()->back();
     }
 

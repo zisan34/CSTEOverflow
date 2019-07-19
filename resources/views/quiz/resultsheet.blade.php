@@ -50,7 +50,11 @@
 						<thead>
 							<th></th>
 							<th>Total:</th>
-							<th>{{$quiz_participation->marks}}/{{$quiz->total_marks}}({{($quiz_participation->marks/$quiz->total_marks)*100}}%)</th>
+							<th>
+								@if($quiz_participation->evaluation_complete())
+								{{$quiz_participation->marks}}/{{$quiz->total_marks}}({{($quiz_participation->marks/$quiz->total_marks)*100}}%)
+								@endif
+							</th>
 							<th></th>
 						</thead>
 					</tr>

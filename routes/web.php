@@ -13,6 +13,12 @@
 
 Route::get('/', 'FrontendController@welcome');
 
+Route::group(['prefix'=>'file'],function(){
+	Route::get('/','FilesController@index')->name('files');
+	Route::post('/save','FilesController@save')->name('file.save')->middleware('auth');
+
+});
+
 
 Route::group(['prefix' => 'admin', 'middleware'=>'admin'], function() {
 
@@ -27,6 +33,32 @@ Route::group(['prefix' => 'admin', 'middleware'=>'admin'], function() {
 	Route::get('/tags','BackendController@tags')->name('tags');
 	Route::post('/add/tag','BackendController@addTag')->name('add.tag');
 	Route::get('/delete/tag/{id}','BackendController@deleteTag')->name('delete.tag');
+
+
+
+
+	Route::name('admin.')->group(function () {
+
+	Route::get('/posts','BackendController@posts')->name('posts');
+	Route::get('/delete/post/{id}','BackendController@deletePost')->name('delete.post');
+	Route::get('/posts/trashed','BackendController@trashedPosts')->name('posts.trashed');
+	Route::get('/destroy/post/{id}','BackendController@destroyPost')->name('destroy.post');
+	Route::get('/restore/post/{id}','BackendController@restorePost')->name('restore.post');
+
+
+	Route::get('/files','BackendController@files')->name('files');
+	Route::get('/delete/file/{id}','BackendController@deleteFile')->name('delete.file');
+
+
+	Route::get('/notices','BackendController@notices')->name('notices');
+	Route::get('/delete/notice/{id}','BackendController@deleteNotice')->name('delete.notice');
+
+
+	});
+
+
+
+
 
 
 
@@ -46,6 +78,8 @@ Route::group(['prefix'=>'notice'],function(){
 	Route::get('/create','NoticesController@create')->name('notice.create')->middleware('auth');
 	Route::post('/save','NoticesController@save')->name('notice.save')->middleware('auth');
 	Route::get('/view/{id}','NoticesController@view')->name('notice.view');
+	Route::get('/show/{path}','NoticesController@show')->name('notice.show');
+
 });
 
 
@@ -55,14 +89,14 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::group(['prefix'=>'post','middleware'=>'auth'],function(){
+Route::group(['prefix'=>'post'],function(){
 
-	Route::post('/save','PostsController@save')->name('post.save');
-	Route::get('/view/{slug}/{enc_id}','PostsController@viewPost')->name('post.view');
+	Route::post('/save','PostsController@save')->name('post.save')->middleware('auth');
+	Route::get('/view/{enc_id}','PostsController@viewPost')->name('post.view');
 	Route::get('/filter/tag/{id}','PostsController@filter')->name('posts.filter.tag');
 
 
-	Route::post('/comment/{post_id}','PostsController@comment')->name('post.comment');
+	Route::post('/comment/{post_id}','PostsController@comment')->name('post.comment')->middleware('auth');
 
 });
 

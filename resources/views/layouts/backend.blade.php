@@ -52,10 +52,7 @@
                 <a class="nav-link" href="{{ route('onlineExam') }}">Online Exam</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Notice</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Posts</a>
+                <a class="nav-link" href="{{ route('notice') }}">Notice</a>
             </li>
 
 
@@ -112,46 +109,57 @@
 <div class="container">
 
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-12">
       <ul class="list-group">
 
         <li class="list-group-item">
-        <a href="{{ route('home') }}">Home</a></li>
+        <a href="{{ route('dashboard') }}">Home</a></li>
 
-        <li class="list-group-item">
-        <a href="{{ route('courses') }}">Courses</a></li>
 
         <li class="list-group-item">
         <a href="{{ route('tags') }}">Tags</a></li>
 
-        <li class="list-group-item">
-        <a href="">All Posts</a></li>       
 
+        <li class="list-group-item">
+        <a href="{{ route('admin.files') }}">All Course Content</a></li>
+
+
+        <li class="list-group-item">
+        <a href="{{ route('admin.posts') }}">All Posts</a></li>
 
 
         {{-- <li class="list-group-item">
         <a href="{{ route('category.create') }}">Create new category</a></li> --}}
 
         <li class="list-group-item">
-        <a href="">All Trashed Posts</a></li>
+        <a href="{{ route('admin.posts.trashed') }}">All Trashed Posts</a></li>
 
         <li class="list-group-item">
-        <a href="">My Profile</a></li>
+        <a href="{{ route('admin.notices') }}">All Notices</a></li>
+
+
+        <li class="list-group-item">
+        <a href="{{ route('courses') }}">Courses</a></li>
+
+
+
+{{-- 
+        <li class="list-group-item">
+        <a href="">My Profile</a></li> --}}
 
         <li class="list-group-item">
         <a href="{{ route('users') }}">Users</a></li>
-
+{{-- 
         <li class="list-group-item">
-        <a href="">Create new User</a></li>
-        <li class="list-group-item">
-        <a href="">Site Settings</a></li>
+        <a href="">Site Settings</a></li> --}}
 
       </ul>
     </div>
     
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-12">
             @yield('content')
     </div>
+
   </div>
 
 </div>

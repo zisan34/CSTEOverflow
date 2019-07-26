@@ -16,6 +16,8 @@
           @endif
           @if(Auth::user()->student())
           <a href="{{ route('onlineExam.participate') }}" class="btn btn-primary btn-block">Participate in Quiz</a>
+          {{-- <a href="{{ route('publicExam') }}" class="btn btn-primary btn-block">Participate in Public Exam</a> --}}
+
           @endif
           <br>
 

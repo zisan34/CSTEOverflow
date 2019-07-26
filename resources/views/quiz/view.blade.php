@@ -85,7 +85,9 @@
 				</form>
 			</div>
 			<div class="card-footer text-center">
-				<a href="{{ route('onlineExam.edit',['id'=>encrypt($quiz->id)]) }}" class="btn btn-primary">Edit</a>
+				<a href="{{ route('onlineExam.edit',['id'=>encrypt($quiz->id)]) }}" class="btn btn-primary float-left">Edit</a>
+				<a href="{{ route('onlineExam.delete',['id'=>encrypt($quiz->id)]) }}" class="btn btn-danger float-right">Delete</a>
+
 			</div>
 		</div>
 		

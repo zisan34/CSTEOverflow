@@ -11,6 +11,22 @@
 |
 */
 
+Route::get('/test',function(){
+	$user=App\User::find(2);
+	$course=App\Course::find(22);
+
+	foreach($course->quizzes as $quiz)
+	{
+		if($quiz->user==Auth::user())
+		{
+			foreach ($quiz->QuizQuestions as $question) {
+				echo $question->question;
+			}
+		}
+	}
+});
+
+
 Route::get('/', 'FrontendController@welcome');
 
 Route::group(['prefix'=>'file'],function(){
@@ -102,7 +118,12 @@ Route::group(['prefix'=>'post'],function(){
 
 
 
+Route::group(['prefix' => 'publicExam', 'middleware'=>'auth'], function() {
+	Route::get('/','FrontendController@PublicExam')->name('publicExam');
+	Route::get('/start/{id}','FrontendController@startQuiz')->name('publicExam.start');
 
+
+});
 Route::group(['prefix' => 'onlineExam', 'middleware'=>'auth'], function() {
 
 	Route::get('/','FrontendController@onlineExam')->name('onlineExam');
@@ -115,9 +136,14 @@ Route::group(['prefix' => 'onlineExam', 'middleware'=>'auth'], function() {
 	Route::post('/create/quiz', 'QuizesController@createQuiz')->name('onlineExam.create.quiz');
 
 	Route::post('/create/questionanswer', 'QuizesController@storeQuestionAnswer')->name('onlineExam.create.questionAnswer');
-	Route::get('/create/setQuestionAnswer/{q_id}', 'QuizesController@setQuestionAnswer')->name('onlineExam.create.setQuestionAnswer');
+	Route::post('/create/setQuestionAnswer', 'QuizesController@setQuestionAnswer')->name('onlineExam.create.setQuestionAnswer');
+	Route::post('/create/questionanswer/addPreQue', 'QuizesController@addPreQue')->name('onlineExam.create.addPreQue');
+
 
 	Route::get('/view/{id}','QuizesController@view')->name('onlineExam.view');
+
+
+	Route::get('/delete/{id}','QuizesController@destroy')->name('onlineExam.delete');
 
 
 	Route::get('/participants/{id}','QuizesController@quizParticipations')->name('onlineExam.participations');

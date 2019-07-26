@@ -11,6 +11,8 @@ use App\Post;
 use App\Semester;
 use App\File;
 use App\Notice;
+
+use Session;
 class BackendController extends Controller
 {
     /**
@@ -26,18 +28,28 @@ class BackendController extends Controller
     public function courses()
     {
         $courses=Course::all();
-        return view('admin.courses')->with('courses',$courses);
+        return view('admin.courses')->with('semesters',Semester::all())
+                                    ->with('courses',$courses);
     }
     public function addCourse(Request $request)
     {
         $this->validate($request,[
-            'title'=>'required'
+            'title'=>'required',
+            'semester'=>'required',
+            'code'=>'required'
         ]);
+
+        if(!Semester::find($request->semester))
+        {
+            session::flash('error','Invalid Semester');
+            return redirect()->back();
+        }
 
         $course=new Course;
 
         $course->title=$request->title;
         $course->code=$request->code;
+        $course->semester_id=$request->semester;
 
         $course->save();
 

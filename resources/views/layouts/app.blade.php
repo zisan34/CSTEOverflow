@@ -113,7 +113,7 @@
     </div>
   </nav>
 
-  <header class="masthead" style="background-image: url('{{asset('front/img/home-bg.jpg')}}'); max-height: 67px;">
+  <header class="masthead" style="background-image: url('{{asset('front/img/cste2.jpg')}}'); max-height: 67px;">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">

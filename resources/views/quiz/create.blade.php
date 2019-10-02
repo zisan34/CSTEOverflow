@@ -21,7 +21,20 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-md-6 col-form-label text-center">Quiz Topic:</label>
+						<label class="col-md-6 col-form-label text-center">Course Code:</label>
+						<div class="col-md-6">
+							<select class="form-control" name="course">
+								<option disabled selected>--Select Course--</option>
+								@foreach($semesters as $semester)
+									@foreach($semester->courses as $course)
+										<option value="{{$course->id}}" @if(old('course')==$course->id)selected @endif>{{$course->title}}</option>
+									@endforeach
+								@endforeach
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Quiz Topic<small> (optional)</small>:</label>
 						<div class="col-md-6">
 							<input type="" class="form-control" name="topic" value="{{old('topic')}}">
 						</div>
@@ -37,7 +50,7 @@
 								echo "1";
 								@endphp" >
 						</div>
-					</div>
+					</div>{{-- 
 					<div class="form-group row">
 						<label class="col-md-6 col-form-label text-center">Number Of MCQ:</label>
 						<div class="col-md-6">
@@ -85,9 +98,9 @@
 								echo "1";
 								@endphp" >
 						</div>
-					</div>
+					</div> --}}
 
-					<div class="form-group row">
+{{-- 					<div class="form-group row">
 						<label class="col-md-6 col-form-label text-center">Quiz Total Marks:</label>
 						<div class="col-md-6">
 							<input type="number" class="form-control" name="total_marks" min="1" 
@@ -98,12 +111,22 @@
 								echo "1";
 								@endphp"  required>
 						</div>
-					</div>
+					</div> --}}
 
 					<div class="form-group row">
 						<label class="col-md-6 col-form-label text-center">Quiz Secret Key:</label>
 						<div class="col-md-6">
 							<input type="" class="form-control" name="key" value="{{old('key')}}">
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<label class="col-md-6 col-form-label text-center">Add from previous questions?:</label>
+						<div class="col-md-6">
+							<select class="form-control" name="previous">
+								<option value="no">No</option>
+								<option value="yes">Yes</option>
+							</select>
 						</div>
 					</div>
 

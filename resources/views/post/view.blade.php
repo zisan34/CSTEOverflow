@@ -7,6 +7,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+          @include('inc.errors')
           <div class="post-heading">
             <h1>{{$post->title}}</h1>
             <span class="meta">Posted by
@@ -28,14 +29,31 @@
       </div>
     </div>
     <div class="container-fluid">
-    	<div class="text-center">
-    		Used Tags: <br>
-		  @foreach($post->tags as $tag)
-		  	<a href="{{ route('posts.filter.tag',['id'=>encrypt($tag->id)]) }}" class="btn btn-secondary" style="border-radius: 50%">{{$tag->title}}</a>
-		  @endforeach
-	  	</div>
-
-	</div>
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto"> 
+            <div class="text-center">       
+            	Used Tags: <br>
+        		  @foreach($post->tags as $tag)
+        		  	<a href="{{ route('posts.filter.tag',['id'=>encrypt($tag->id)]) }}" class="btn btn-secondary" style="border-radius: 50%">{{$tag->title}}</a>
+        		  @endforeach
+            </div>
+          </div>
+        </div>
+      @auth
+      @if(Auth::user()==$post->user)
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="float-left"><a href="{{ route('post.edit',['id'=>encrypt($post->id)]) }}" class="btn btn-primary">Edit</a></div>
+          <form method="post" action="{{ route('post.delete')}}">
+            @csrf
+            <input type="text" name="id" value="{{encrypt($post->id)}}" hidden>
+          <div class="float-right"><input type="submit" class="btn btn-danger" value="Delete"></div>
+          </form>
+        </div>
+      </div>
+      @endif
+      @endauth
+    </div>
 	<div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">

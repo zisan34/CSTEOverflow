@@ -27,7 +27,7 @@ Route::get('/test',function(){
 });
 
 
-Route::get('/', 'FrontendController@welcome');
+Route::get('/', 'FrontendController@welcome')->name('home');
 
 Route::group(['prefix'=>'file'],function(){
 	Route::get('/','FilesController@index')->name('files');
@@ -102,14 +102,17 @@ Route::group(['prefix'=>'notice'],function(){
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 
 
 Route::group(['prefix'=>'post'],function(){
 
-	Route::post('/save','PostsController@save')->name('post.save')->middleware('auth');
+	Route::post('/save','PostsController@save')->name('post.save');
 	Route::get('/view/{enc_id}','PostsController@viewPost')->name('post.view');
 	Route::get('/filter/tag/{id}','PostsController@filter')->name('posts.filter.tag');
+	Route::post('/delete','PostsController@delete')->name('post.delete')->middleware('auth');
+	Route::get('/edit/{id}', 'PostsController@edit')->name('post.edit');
+	Route::post('/update','PostsController@update')->name('post.update');
 
 
 	Route::post('/comment/{post_id}','PostsController@comment')->name('post.comment')->middleware('auth');

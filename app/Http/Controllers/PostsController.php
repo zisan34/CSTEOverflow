@@ -17,6 +17,10 @@ use Session;
 class PostsController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth',['except' => ['viewPost', 'filter']]);
+    }
     public function save(Request $request)
     {
     	$this->validate($request,[
@@ -39,6 +43,54 @@ class PostsController extends Controller
     	Session::flash('success','Posted successfully');
 
     	return redirect()->back();
+    }
+    public function edit($enc_id)
+    {
+
+        $post_id=decrypt($enc_id);
+        $post=Post::find($post_id);
+
+        if(Auth::user()==$post->user||Auth::user()->admin())
+        {
+            return view('post.edit')->with('post',$post);
+        }
+        else 
+        {
+            Session::flash('error','You don\'t have permission to do this.');
+            return redirect()->back();
+        }
+    }
+    public function update(Request $request)
+    {       
+        $this->validate($request,[
+            'post_id'=>'required',
+            'title'=>'required',
+            'content'=>'required',
+            'tags'=>'required'
+        ]);
+
+        $post=Post::find(decrypt($request->post_id));
+
+        if(Auth::user()==$post->user)
+        {
+        $post->title=$request->title;
+        $post->content=$request->content;
+        $post->slug=str_slug($request->title);
+
+        $post->save();
+
+        $post->tags()->attach($request->tags);
+
+        Session::flash('success','Posted successfully');
+
+        return redirect()->route('post.view',['id'=>encrypt($post->id)]);
+        }
+        else
+        {
+        Session::flash('error','Invalid request');
+        return redirect()->back();
+
+        }
     }
     public function viewPost($enc_id)
     {
@@ -80,5 +132,22 @@ class PostsController extends Controller
     	$comment->save();
 
     	return redirect()->back();
+    }
+
+    public function delete(Request $request)
+    {
+        $post_id=decrypt($request->id);
+        $post=Post::find($post_id);
+
+        if(Auth::user()==$post->user||Auth::user()->admin())
+        {
+
+            $post->delete();
+            return redirect()->route('home');
+        }
+
+        Session::flash('error','Invalid request');
+
+        return redirect()->back();
     }
 }

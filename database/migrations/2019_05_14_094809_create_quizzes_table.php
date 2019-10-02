@@ -16,18 +16,19 @@ class CreateQuizzesTable extends Migration
         Schema::create('quizzes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('course_id');
             $table->string('title');
-            $table->string('topic');
+            $table->string('topic')->nullable();
             $table->unsignedInteger('time');
             $table->boolean('enabled')->default('0');
-            $table->integer('total_marks');
+            $table->integer('total_marks')->default('0');
             $table->boolean('show_correct')->default('1');
             $table->boolean('multiple_attempt')->default('0');
             $table->string('key');
-            $table->unsignedInteger('mcq');
-            $table->unsignedInteger('fig');
-            $table->unsignedInteger('true_false');            
-            $table->unsignedInteger('short_ques');
+            $table->unsignedInteger('mcq')->nullable();
+            $table->unsignedInteger('fig')->nullable();
+            $table->unsignedInteger('true_false')->nullable();            
+            $table->unsignedInteger('short_ques')->nullable();
             $table->string('message')->nullable();
             $table->timestamps();
         });

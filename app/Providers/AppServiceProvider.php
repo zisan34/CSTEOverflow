@@ -60,5 +60,6 @@ class AppServiceProvider extends ServiceProvider
                      ->groupBy('tag_id')
                      ->orderBy('repetition', 'desc')
                      ->get()->take(5));
+        view()->share('semesters',\App\Semester::all());
     }
 }
